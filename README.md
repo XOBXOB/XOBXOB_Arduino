@@ -1,4 +1,4 @@
-ArduinoXOBXOBEthernet
+XOBXOB\_Arduino\_Ethernet
 =====================
 
 Arduino Library for XOBXOB using the Ethernet Shield
