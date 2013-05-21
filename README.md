@@ -5,6 +5,8 @@ Arduino Library for XOBXOB using the Ethernet Shield
 
 he XOBXOB library supports the XOBXOB Internet of Things service by simplifying communication through a single Arduino object, the XOBXOB.
 
+Download the zip file here. Then, to load library in the Arduino IDE, see the instructions on http://www.Arduino.cc  
+
 See the sample application XOBXOB_LightOnLightOff to see an example of how to connect your Arduino to XOBXOB. What follows is a description of the library and each of its methods.
 
 ####Create a XOBXOB object:
