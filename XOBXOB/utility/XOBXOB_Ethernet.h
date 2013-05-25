@@ -1,9 +1,9 @@
 ///////////////////////////////////////////////////////////////
 //
-//  XOBXOB_Ethernet.cpp
+//  xobxob_Ethernet
 //
-//  Arduino classes for communicating with XOBXOB IoT platform
-//  Using an Arduino Ethernet Shield
+//  Arduino interface to XOBXOB IoT platform
+//
 //
 //  The MIT License (MIT)
 //  
@@ -27,9 +27,44 @@
 //  OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 //  THE SOFTWARE.// 
 
-#ifndef _xobxob
-#define _xobxob
+#ifndef xobxob_h
+#define xobxob_h
 
-#include "utility/XOBXOB_Ethernet.h"
+#include <Arduino.h>
+#include <Ethernet.h>
+#include "FSON.h"
 
-#endif
+// XOBXOB server information
+#define XOBXOB_SERVER_NAME "www.xobxob.com"
+#define XOBXOB_SERVER_PORT 80
+
+// CLASS
+class XOBXOB_Ethernet
+{
+  
+  public:
+
+    XOBXOB_Ethernet   	(uint8_t*, String);               // Constructor
+    void     			init();
+    boolean  			connect ();
+    boolean  			connected ();
+    void     			stop ();
+    void     			requestXOB (String);
+    void     			updateXOB (String, String);
+    void     			initResponse();
+    boolean  			loadStreamedResponse();
+    void	 			echo(boolean);
+    
+    String   			getProperty(String);              // Returns property from FSON response
+
+  private:
+  
+    uint8_t* _mac;							   // MAC Address for Ethernet card
+    String   _APIKey;						   // APIKey for XOBXOB
+    boolean  _echo;							   // Echos requests and read data to serial port
+    FSON _FSON;                                // FSON utilities
+
+};
+
+#endif // XOBXOB_Ethernet
+
