@@ -1,8 +1,10 @@
 ///////////////////////////////////////////////////////////////
 //
-//  XOBXOB.h
+//  XOBXOB_Processing
 //
-//  Header file for XOBXOB library
+//  Arduino interface to XOBXOB IoT platform
+//	For use with the Processing "connector" application
+//
 //
 //  The MIT License (MIT)
 //  
@@ -26,10 +28,43 @@
 //  OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 //  THE SOFTWARE.// 
 
-#ifndef _xobxob_h
-#define _xobxob_h
+#ifndef _xobxob_processing_h
+#define _xobxob_processing_h
 
-#include "utility/XOBXOB_Ethernet.h"
-//#include "utility/XOBXOB_Processing.h"
+#include <Arduino.h>
+#include "FSON.h"
 
-#endif
+// XOBXOB server information
+#define XOBXOB_SERVER_NAME "www.xobxob.com"
+#define XOBXOB_SERVER_PORT 80
+
+// CLASS
+class XOBXOB_Processing
+{
+  
+  public:
+
+    XOBXOB_Processing	(uint8_t*, String);               // Constructor
+    void     			init();
+    boolean  			connect ();
+    boolean  			connected ();
+    void     			stop ();
+    void     			requestXOB (String);
+    void     			updateXOB (String, String);
+    void     			initResponse();
+    boolean  			loadStreamedResponse();
+    void	 			echo(boolean);
+    
+    String   			getProperty(String);              // Returns property from FSON response
+
+  private:
+  
+    uint8_t* _mac;							   // MAC Address for Ethernet card
+    String   _APIKey;						   // APIKey for XOBXOB
+    boolean  _echo;							   // Echos requests and read data to serial port
+    FSON _FSON;                                // FSON utilities
+
+};
+
+#endif // XOBXOB_Processing
+

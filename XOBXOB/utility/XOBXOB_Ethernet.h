@@ -3,6 +3,7 @@
 //  xobxob_Ethernet
 //
 //  Arduino interface to XOBXOB IoT platform
+//	For use with the Arduino Ethernet shield
 //
 //
 //  The MIT License (MIT)
@@ -27,8 +28,8 @@
 //  OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 //  THE SOFTWARE.// 
 
-#ifndef xobxob_h
-#define xobxob_h
+#ifndef _xobxob_ethernet_h
+#define _xobxob_ethernet_h
 
 #include <Arduino.h>
 #include <Ethernet.h>
