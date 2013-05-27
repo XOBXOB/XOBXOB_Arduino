@@ -1,6 +1,6 @@
 ////////////////////////////////////////////////////////////////////////////
 //
-//  XOBXOB client
+//  XOBXOB Light On / Light Off :: Ethernet Shield
 // 
 //  This sketch connects to the XOBXOB IoT platform using an Arduino Ethernet shield. 
 // 

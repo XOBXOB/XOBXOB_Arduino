@@ -33,6 +33,7 @@
 
 #include <Arduino.h>
 #include <Ethernet.h>
+#include <SPI.h>
 #include "FSON.h"
 
 // XOBXOB server information

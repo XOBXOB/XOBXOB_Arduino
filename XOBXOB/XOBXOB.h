@@ -30,6 +30,6 @@
 #define _xobxob_h
 
 #include "utility/XOBXOB_Ethernet.h"
-//#include "utility/XOBXOB_Processing.h"
+#include "utility/XOBXOB_Processing.h"
 
 #endif

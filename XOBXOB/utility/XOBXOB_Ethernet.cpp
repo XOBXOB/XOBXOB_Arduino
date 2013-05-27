@@ -30,8 +30,6 @@
 
 #include <Arduino.h>
 #include "XOBXOB_Ethernet.h"
-#include <Ethernet.h>
-#include <SPI.h>
 
 EthernetClient _client;                    // Ethernet client
 

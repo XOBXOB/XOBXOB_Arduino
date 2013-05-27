@@ -1,6 +1,6 @@
 ////////////////////////////////////////////////////////////////////////////
 //
-//  XOBXOB client
+//  XOBXOB Light On / Light Off :: Processing
 // 
 //  This sketch connects to the XOBXOB IoT platform using the Processing Connector application 
 // 
@@ -27,8 +27,11 @@
 //  OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 //  THE SOFTWARE.// 
 
-// All of these includes are required
+// All of these includes are required (even though the Ethernet board isn't used
+// Arduino still compiles it and needs the Ethernet and SPI includes)
 #include <XOBXOB.h>
+#include <Ethernet.h>
+#include <SPI.h>
 
 // Ethernet shield MAC address (possibly printed on label)
 byte mac[] = {  0x90, 0xA2, 0xDA, 0x0D, 0x09, 0x59 };
