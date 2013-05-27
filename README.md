@@ -1,7 +1,7 @@
 XOBXOB\_Arduino
 =====================
 
-Arduino Library for XOBXOB. Currently supports the Ethernet Shield
+Arduino Library for XOBXOB. Currently supports the Ethernet Shield and XOBXOB Connector (Net connection through the USB port with a Processing sketch)
 
 The XOBXOB library supports the XOBXOB Internet of Things service by simplifying communication through a single Arduino object, the XOBXOB.
 
