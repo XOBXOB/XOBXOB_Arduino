@@ -1,9 +1,9 @@
 ///////////////////////////////////////////////////////////////
 //
-//  XOBXOB_Processing
+//  xobxob_Ethernet
 //
 //  Arduino interface to XOBXOB IoT platform
-//	For use with the Processing "connector" application
+//	For use with the Arduino Ethernet shield
 //
 //
 //  The MIT License (MIT)
@@ -28,23 +28,22 @@
 //  OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 //  THE SOFTWARE.// 
 
-#ifndef _xobxob_processing_h
-#define _xobxob_processing_h
+#ifndef _xobxob_ethernet_h
+#define _xobxob_ethernet_h
 
 #include <Arduino.h>
+#include <Ethernet.h>
+#include <SPI.h>
 #include "FSON.h"
-
-// XOBXOB server information
-#define XOBXOB_SERVER_NAME "www.xobxob.com"
-#define XOBXOB_SERVER_PORT 80
+#include "XOBXOB_Info.h"
 
 // CLASS
-class XOBXOB_Processing
+class XOBXOB_Ethernet
 {
   
   public:
 
-    XOBXOB_Processing	(uint8_t*, String);               // Constructor
+    XOBXOB_Ethernet   	(uint8_t*, String);               // Constructor
     void     			init();
     boolean  			connect ();
     boolean  			connected ();
@@ -66,5 +65,5 @@ class XOBXOB_Processing
 
 };
 
-#endif // XOBXOB_Processing
+#endif // XOBXOB_Ethernet
 

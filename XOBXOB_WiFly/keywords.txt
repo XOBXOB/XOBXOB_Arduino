@@ -1,0 +1,25 @@
+#######################################
+# Syntax Coloring Map For xobxob
+#######################################
+
+#######################################
+# Datatypes (KEYWORD1)
+#######################################
+
+XOBXOB_WiFly	KEYWORD1
+FSON	KEYWORD1
+
+#######################################
+# Methods and Functions (KEYWORD2)
+#######################################
+
+requestXOB	KEYWORD2
+updateXOB	KEYWORD2
+initResponse	KEYWORD2
+loadStreamedResponse	KEYWORD2
+getProperty	KEYWORD2
+
+#######################################
+# Constants (LITERAL1)
+#######################################
+

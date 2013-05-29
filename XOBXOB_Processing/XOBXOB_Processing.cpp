@@ -1,9 +1,9 @@
 ///////////////////////////////////////////////////////////////
 //
-//  XOBXOB_Ethernet.cpp
+//  XOBXOB_Processing.cpp
 //
 //  Arduino classes for communicating with XOBXOB IoT platform
-//  Using an Arduino Ethernet Shield
+//  Using the Processing internet connector application
 //
 //
 //  The MIT License (MIT)
@@ -29,92 +29,76 @@
 //  THE SOFTWARE.// 
 
 #include <Arduino.h>
-#include "XOBXOB_Ethernet.h"
-
-EthernetClient _client;                    // Ethernet client
-
-static String _LF = "\x0A";
-static String HOST_HEADER = _LF + "Host: " + XOBXOB_SERVER_NAME + _LF + _LF;
+#include "XOBXOB_Processing.h"
 
 // Constructor
-XOBXOB_Ethernet::XOBXOB_Ethernet(uint8_t *mac, String key)
+XOBXOB_Processing::XOBXOB_Processing(uint8_t *mac, String key)
 {
   // Save mac address and API key
-  _mac    = mac;
+  _mac    = mac;  // Ignored for Processing connector
   _APIKey = key;
   
 }
 
-// Initialize the Ethernet board
-void XOBXOB_Ethernet::init ()
+// Initialize
+void XOBXOB_Processing::init ()
 {
 
-  // Start the Ethernet connection. Delay to give it time
-  Ethernet.begin(_mac);
-  delay (1000);
+  // Start the Processing connection
+  Serial.begin (57600);
 
 }
 
 // Connect to XOBXOB server
-boolean XOBXOB_Ethernet::connect ()
+boolean XOBXOB_Processing::connect ()
 {
-  return(_client.connect(XOBXOB_SERVER_NAME, XOBXOB_SERVER_PORT));
+  // NOP
 }
       
-boolean XOBXOB_Ethernet::connected()
+boolean XOBXOB_Processing::connected()
 {
-  return (_client.connected());
+  return true;
 }
 
 // Make an HTTP GET request for XOB "x"
-void XOBXOB_Ethernet::requestXOB (String x)
+void XOBXOB_Processing::requestXOB (String x)
 {
     String request = "GET /v1/xobs/" + x + "?key=" + _APIKey + HOST_HEADER ;
-    if (_echo) {
-    	Serial.println ();
-    	Serial.println (request);
-    }
-    	
-    _client.print(request);
+	Serial.println (request);
 }
 
 // Make an HTTP PUT request for XOB "x"
-void XOBXOB_Ethernet::updateXOB (String x, String query)
+void XOBXOB_Processing::updateXOB (String x, String query)
 {
     String request = "PUT /v1/xobs/" + x + "?key=" + _APIKey + '&' + query + HOST_HEADER ;
-    if (_echo) {
-		Serial.println ();
-	    Serial.println (request);
-    }
-    _client.print(request);
+    Serial.println (request);
 }
 
-void XOBXOB_Ethernet::initResponse()
+void XOBXOB_Processing::initResponse()
 {
   _FSON.initStreamScanner();
 }
 
-boolean XOBXOB_Ethernet::loadStreamedResponse()
+boolean XOBXOB_Processing::loadStreamedResponse()
 {
-  if (_client.available()) {
-    char c = _client.read();
-    if (_echo) Serial.print(c);
+  if (Serial.available()) {
+    char c = Serial.read();
     return (_FSON.setStreamedObject(c));
   } else {
     return false;
   }
 }
 
-void XOBXOB_Ethernet::stop()
+void XOBXOB_Processing::stop()
 {
-  return (_client.stop());
+  // NOP
 }
 
-String XOBXOB_Ethernet::getProperty(String propertyName)
+String XOBXOB_Processing::getProperty(String propertyName)
 {
   return (_FSON.getProperty(propertyName));
 }
 
-void XOBXOB_Ethernet::echo (boolean e) {
-	_echo = e;
+void XOBXOB_Processing::echo (boolean e) {
+	// NOP
 }

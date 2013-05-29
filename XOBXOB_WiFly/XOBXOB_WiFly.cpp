@@ -1,9 +1,9 @@
 ///////////////////////////////////////////////////////////////
 //
-//  XOBXOB_Processing.cpp
+//  XOBXOB_WiFly.cpp
 //
 //  Arduino classes for communicating with XOBXOB IoT platform
-//  Using the Processing internet connector application
+//  using a Sparkfun WiFly Shield
 //
 //
 //  The MIT License (MIT)
@@ -29,79 +29,39 @@
 //  THE SOFTWARE.// 
 
 #include <Arduino.h>
-#include "XOBXOB_Processing.h"
-
-static String _LF = "\x0A";
-static String HOST_HEADER = _LF + "Host: " + XOBXOB_SERVER_NAME + _LF + _LF;
+#include <XOBXOB_WiFly.h>
 
 // Constructor
-XOBXOB_Processing::XOBXOB_Processing(uint8_t *mac, String key)
+XOBXOB_WiFly::XOBXOB_WiFly(String APIKey)
 {
-  // Save mac address and API key
-  _mac    = mac;  // Ignored for Processing connector
-  _APIKey = key;
-  
-}
-
-// Initialize
-void XOBXOB_Processing::init ()
-{
-
-  // Start the Processing connection
-  Serial.begin (57600);
-
-}
-
-// Connect to XOBXOB server
-boolean XOBXOB_Processing::connect ()
-{
-  // NOP
-}
-      
-boolean XOBXOB_Processing::connected()
-{
-  return true;
+	_APIKey = APIKey;
 }
 
 // Make an HTTP GET request for XOB "x"
-void XOBXOB_Processing::requestXOB (String x)
+String XOBXOB_WiFly::requestXOB (String x)
 {
-    String request = "GET /v1/xobs/" + x + "?key=" + _APIKey + HOST_HEADER ;
-	Serial.println (request);
+    String request = "GET /v1/xobs/" + x + "?key=" + _APIKey + HOST_HEADER;
+	return (request);
 }
 
 // Make an HTTP PUT request for XOB "x"
-void XOBXOB_Processing::updateXOB (String x, String query)
+String XOBXOB_WiFly::updateXOB (String x, String query)
 {
     String request = "PUT /v1/xobs/" + x + "?key=" + _APIKey + '&' + query + HOST_HEADER ;
-    Serial.println (request);
+	return (request);
 }
 
-void XOBXOB_Processing::initResponse()
+void XOBXOB_WiFly::initResponse()
 {
   _FSON.initStreamScanner();
 }
 
-boolean XOBXOB_Processing::loadStreamedResponse()
+boolean XOBXOB_WiFly::loadStreamedResponse(char c)
 {
-  if (Serial.available()) {
-    char c = Serial.read();
     return (_FSON.setStreamedObject(c));
-  } else {
-    return false;
-  }
 }
 
-void XOBXOB_Processing::stop()
-{
-  // NOP
-}
-
-String XOBXOB_Processing::getProperty(String propertyName)
+String XOBXOB_WiFly::getProperty(String propertyName)
 {
   return (_FSON.getProperty(propertyName));
-}
-
-void XOBXOB_Processing::echo (boolean e) {
-	// NOP
 }

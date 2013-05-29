@@ -1,9 +1,11 @@
 XOBXOB\_Arduino
 =====================
 
-Arduino Library for XOBXOB. Currently supports the Ethernet Shield and XOBXOB Connector (Net connection through the USB port with a Processing sketch)
+Arduino Libraries for XOBXOB. Currently libraries support the Ethernet Shield, XOBXOB Connector (Net connection through the USB port with a Processing sketch), and the SparkFun WiFly shield.
 
 The XOBXOB library supports the XOBXOB Internet of Things service by simplifying communication through a single Arduino object, the XOBXOB.
+
+The Ethernet and Processing libraries are very similar. For the WiFly shield, only creating requests and processing responses are handled by the library. All communication with the WiFly is handled by the WiFly library. The WiFly library supports some of the methods listed below, but not all. See the sample application for examples.
 
 Download the zip file here. Then, to load library in the Arduino IDE, see the instructions on http://www.Arduino.cc  
 

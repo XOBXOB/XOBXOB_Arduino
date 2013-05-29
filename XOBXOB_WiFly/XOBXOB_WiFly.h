@@ -1,9 +1,9 @@
 ///////////////////////////////////////////////////////////////
 //
-//  xobxob_Ethernet
+//  XOBXOB_WiFly.h
 //
 //  Arduino interface to XOBXOB IoT platform
-//	For use with the Arduino Ethernet shield
+//	for use with the Sparkfun WiFly shield
 //
 //
 //  The MIT License (MIT)
@@ -28,45 +28,33 @@
 //  OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 //  THE SOFTWARE.// 
 
-#ifndef _xobxob_ethernet_h
-#define _xobxob_ethernet_h
+#ifndef _xobxob_wifly_h
+#define _xobxob_wifly_h
 
 #include <Arduino.h>
-#include <Ethernet.h>
-#include <SPI.h>
+#include "XOBXOB_Info.h"
 #include "FSON.h"
 
-// XOBXOB server information
-#define XOBXOB_SERVER_NAME "www.xobxob.com"
-#define XOBXOB_SERVER_PORT 80
-
 // CLASS
-class XOBXOB_Ethernet
+class XOBXOB_WiFly
 {
   
   public:
 
-    XOBXOB_Ethernet   	(uint8_t*, String);               // Constructor
-    void     			init();
-    boolean  			connect ();
-    boolean  			connected ();
-    void     			stop ();
-    void     			requestXOB (String);
-    void     			updateXOB (String, String);
+    					XOBXOB_WiFly (String); 			  // Constructor
+    String     			requestXOB (String);
+    String     			updateXOB (String, String);
     void     			initResponse();
-    boolean  			loadStreamedResponse();
-    void	 			echo(boolean);
+    boolean  			loadStreamedResponse(char);
     
     String   			getProperty(String);              // Returns property from FSON response
 
   private:
   
-    uint8_t* _mac;							   // MAC Address for Ethernet card
-    String   _APIKey;						   // APIKey for XOBXOB
-    boolean  _echo;							   // Echos requests and read data to serial port
-    FSON _FSON;                                // FSON utilities
+  	String				_APIKey;
+    FSON	 			_FSON;                            // FSON utilities
 
 };
 
-#endif // XOBXOB_Ethernet
+#endif // XOBXOB_WiFly
 

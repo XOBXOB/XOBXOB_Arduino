@@ -7,8 +7,6 @@
 #######################################
 
 XOBXOB_Ethernet	KEYWORD1
-XOBXOB_Processing	KEYWORD1
-XOBXOB_Wifly	KEYWORD1
 FSON	KEYWORD1
 
 #######################################

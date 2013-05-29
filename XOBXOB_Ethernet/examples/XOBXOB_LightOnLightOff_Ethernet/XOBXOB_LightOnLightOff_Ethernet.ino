@@ -28,7 +28,7 @@
 //  THE SOFTWARE.// 
 
 // All of these includes are required
-#include <XOBXOB.h>
+#include <XOBXOB_Ethernet.h>
 #include <Ethernet.h>
 #include <SPI.h>
 

@@ -29,7 +29,7 @@
 
 // All of these includes are required (even though the Ethernet board isn't used
 // Arduino still compiles it and needs the Ethernet and SPI includes)
-#include <XOBXOB.h>
+#include <XOBXOB_Processing.h>
 #include <Ethernet.h>
 #include <SPI.h>
 
