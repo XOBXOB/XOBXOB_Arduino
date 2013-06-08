@@ -29,10 +29,17 @@
 
 ///////////////////////////////////////////////////////////////////////////
 //
-//	 Make sure to set your network SSID and PASSWORD
-//	 for your network in credentials.h
+//
+//	 IMPORTANT
+//
+//	 To connect to YOUR network,
+//	 set network SSID and PASSWORD in credentials.h
+//
+//	 See the note below for UNSECURED networks
+//
 //
 ///////////////////////////////////////////////////////////////////////////
+
 #include "credentials.h"
 
 // Other Includes
@@ -40,6 +47,7 @@
 #include "XOBXOB_WiFly.h"
 
 // XOBXOB APIKey (from your XOBXOB account page)
+// This devault is for the account User Name = "sandbox", PW = "sandbox"
 String APIKey = "0000-0000-0000-0000-0000";
 
 // Create XOBXOB_WiFly and WiFly Client
@@ -58,10 +66,14 @@ void setup() {
   // Open serial communications
   Serial.begin(57600); while (!Serial);
 
-  // Try to join network
+  // Start up the WiFly
   Serial.print ("Beginning...");
   WiFly.begin();
-  if (!WiFly.join(ssid, password)) {
+  
+  // Try to join network
+  if (!WiFly.join(ssid, password)) {				// for SECURED NETWORK
+  //if (!WiFly.join(ssid)) {					// for UNSECURED NETWORK
+
     Serial.println("Unable to join network.");
     while (1);
   }  
