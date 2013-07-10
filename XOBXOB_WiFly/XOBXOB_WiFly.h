@@ -47,7 +47,7 @@ class XOBXOB_WiFly
     void     			initResponse();
     boolean  			loadStreamedResponse(char);
     
-    String   			getProperty(String);              // Returns property from FSON response
+    String   			getMessage(String);              // Returns message contents from FSON response
 
   private:
   

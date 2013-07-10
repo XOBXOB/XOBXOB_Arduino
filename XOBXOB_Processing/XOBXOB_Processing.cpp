@@ -94,7 +94,7 @@ void XOBXOB_Processing::stop()
   // NOP
 }
 
-String XOBXOB_Processing::getProperty(String propertyName)
+String XOBXOB_Processing::getMessage(String propertyName)
 {
   return (_FSON.getProperty(propertyName));
 }

@@ -1,6 +1,6 @@
 ////////////////////////////////////////////////////////////////////////////
 //
-//  XOBXOB Light On / Light Off :: Ethernet Shield
+//  XOBXOB Blink :: Ethernet Shield
 // 
 //  This sketch connects to the XOBXOB IoT platform using an Arduino Ethernet shield. 
 // 
@@ -48,6 +48,7 @@ String lastMessage;
 
 void setup() {
   
+  // This is the LED pin
   pinMode (8, OUTPUT);
   digitalWrite (8, LOW);  
   
@@ -85,12 +86,12 @@ void loop()
 
   // Load response a character at a time when it is available.
   // If true is returned, that means a completed JSON object has been received
-  // If this is the first one (!done), then extract the "switch" property and 
+  // If this is the first one (!done), then extract the "switch" message and 
   // check to see if we should turn the LED on
 
   if (!done && XOB.loadStreamedResponse()) {
 
-    String LED = XOB.getProperty("switch");
+    String LED = XOB.getMessage("switch");
     if (LED == "\"ON\"") {
       digitalWrite (8, HIGH);
     } else {

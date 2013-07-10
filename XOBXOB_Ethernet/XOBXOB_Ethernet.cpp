@@ -107,7 +107,7 @@ void XOBXOB_Ethernet::stop()
   return (_client.stop());
 }
 
-String XOBXOB_Ethernet::getProperty(String propertyName)
+String XOBXOB_Ethernet::getMessage(String propertyName)
 {
   return (_FSON.getProperty(propertyName));
 }

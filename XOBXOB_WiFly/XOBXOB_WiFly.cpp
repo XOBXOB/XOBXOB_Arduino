@@ -61,7 +61,7 @@ boolean XOBXOB_WiFly::loadStreamedResponse(char c)
     return (_FSON.setStreamedObject(c));
 }
 
-String XOBXOB_WiFly::getProperty(String propertyName)
+String XOBXOB_WiFly::getMessage(String propertyName)
 {
   return (_FSON.getProperty(propertyName));
 }

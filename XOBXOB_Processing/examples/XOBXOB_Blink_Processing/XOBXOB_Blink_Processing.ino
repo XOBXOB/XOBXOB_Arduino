@@ -1,9 +1,9 @@
 ////////////////////////////////////////////////////////////////////////////
 //
-//  XOBXOB Light On / Light Off :: WiFly Shield
+//  XOBXOB Blink :: Processing
 // 
-//  This sketch connects to the XOBXOB IoT platform using a Sparkfun
-//  WiFly shield. 
+//  This sketch connects to the XOBXOB IoT platform using the Processing Connector application 
+// 
 //
 //  The MIT License (MIT)
 //  
@@ -27,64 +27,35 @@
 //  OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 //  THE SOFTWARE.// 
 
-///////////////////////////////////////////////////////////////////////////
-//
-//
-//	 IMPORTANT
-//
-//	 To connect to YOUR network,
-//	 set network SSID and PASSWORD in credentials.h
-//
-//	 See the note below for UNSECURED networks
-//
-//
-///////////////////////////////////////////////////////////////////////////
+// All of these includes are required (even though the Ethernet board isn't used
+// Arduino still compiles it and needs the Ethernet and SPI includes)
+#include <XOBXOB_Processing.h>
+#include <Ethernet.h>
+#include <SPI.h>
 
-#include "credentials.h"
-
-// Other Includes
-#include <WiFly.h>
-#include "XOBXOB_WiFly.h"
+// Ethernet shield MAC address (possibly printed on label)
+byte mac[] = {  0x90, 0xA2, 0xDA, 0x0D, 0x09, 0x59 };
 
 // XOBXOB APIKey (from your XOBXOB account page)
-// This devault is for the account User Name = "sandbox", PW = "sandbox"
 String APIKey = "0000-0000-0000-0000-0000";
 
-// Create XOBXOB_WiFly and WiFly Client
-XOBXOB_WiFly XOB (APIKey);
-Client WiFlyClient (XOBXOB_SERVER_NAME, XOBXOB_SERVER_PORT);
+// Create XOBXOB object (for the Ethernet shield)
+XOBXOB_Processing XOB (mac, APIKey);
 
 // Response processing
 boolean done = true;
 long lastRequestTime = -20000;
+String lastMessage;
 
 void setup() {
   
+  // Pin for LED
   pinMode (8, OUTPUT);
   digitalWrite (8, LOW);  
   
-  // Open serial communications
-  Serial.begin(57600); while (!Serial);
-
-  // Start up the WiFly
-  Serial.print ("Beginning...");
-  WiFly.begin();
+  // Open serial communications and initialize XOBXOB
+  XOB.init();
   
-  // Try to join network
-  if (!WiFly.join(ssid, password)) {				// for SECURED NETWORK
-  //if (!WiFly.join(ssid)) {					// for UNSECURED NETWORK
-
-    Serial.println("Unable to join network.");
-    while (1);
-  }  
-  Serial.println ("Network OK.");
-  
-  Serial.print("Connecting...");
-  if (WiFlyClient.connect()) {
-    Serial.println("Done.");
-  } else {
-    Serial.println("Ooops.");
-  }
 }
 
 void loop()
@@ -96,32 +67,31 @@ void loop()
     // Update done flag, and start waiting for the next interval
     // Tend to the connection and response processor
     done = false;
+    if (!XOB.connected()) {
+      XOB.connect();
+    }
     XOB.initResponse();
     
     // Now, request information from XOB named "XOB"
     lastRequestTime = millis();
-    WiFlyClient.println(XOB.requestXOB("XOB"));
+    XOB.requestXOB("XOB");
   }
 
   // Load response a character at a time when it is available.
   // If true is returned, that means a completed JSON object has been received
-  // If this is the first one (!done), then extract the "switch" property and 
+  // If this is the first one (!done), then extract the "switch" message and 
   // check to see if we should turn the LED on
 
-  if (WiFlyClient.available()) {
-  	char c = WiFlyClient.read();
+  if (!done && XOB.loadStreamedResponse()) {
 
-	  if (!done && XOB.loadStreamedResponse(c)) {
-
-	    String LED = XOB.getProperty("switch");
-	    if (LED == "\"ON\"") {
-	      digitalWrite (8, HIGH);
-	    } else {
-	      digitalWrite (8, LOW);
-	    }
-	    
-	    done = true;
-	  }
+    String LED = XOB.getMessage("switch");
+    if (LED == "\"ON\"") {
+      digitalWrite (8, HIGH);
+    } else {
+      digitalWrite (8, LOW);
+    }
+    
+    done = true;
   }
 
 }
