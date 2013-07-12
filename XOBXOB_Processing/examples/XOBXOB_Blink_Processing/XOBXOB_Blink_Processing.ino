@@ -33,14 +33,11 @@
 #include <Ethernet.h>
 #include <SPI.h>
 
-// Ethernet shield MAC address (possibly printed on label)
-byte mac[] = {  0x90, 0xA2, 0xDA, 0x0D, 0x09, 0x59 };
-
 // XOBXOB APIKey (from your XOBXOB account page)
 String APIKey = "0000-0000-0000-0000-0000";
 
-// Create XOBXOB object (for the Ethernet shield)
-XOBXOB_Processing XOB (mac, APIKey);
+// Create XOBXOB object
+XOBXOB_Processing XOB (APIKey);
 
 // Response processing
 boolean done = true;

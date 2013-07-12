@@ -41,7 +41,7 @@ class XOBXOB_Processing
   
   public:
 
-    XOBXOB_Processing	(uint8_t*, String);               // Constructor
+    XOBXOB_Processing	(String);               // Constructor
     void     			init();
     boolean  			connect ();
     boolean  			connected ();
@@ -56,7 +56,6 @@ class XOBXOB_Processing
 
   private:
   
-    uint8_t* _mac;							   // MAC Address for Ethernet card
     String   _APIKey;						   // APIKey for XOBXOB
     boolean  _echo;							   // Echos requests and read data to serial port
     FSON _FSON;                                // FSON utilities

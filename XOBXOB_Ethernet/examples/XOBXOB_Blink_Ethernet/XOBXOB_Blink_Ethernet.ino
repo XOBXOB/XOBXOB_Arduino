@@ -33,7 +33,7 @@
 #include <SPI.h>
 
 // Ethernet shield MAC address (possibly printed on label)
-byte mac[] = {  0x90, 0xA2, 0xDA, 0x0D, 0x09, 0x59 };
+byte mac[] = {  0x00, 0x00, 0x00, 0x00, 0x00, 0x00 };
 
 // XOBXOB APIKey (from your XOBXOB account page)
 String APIKey = "0000-0000-0000-0000-0000";

@@ -47,7 +47,6 @@
 #include "XOBXOB_WiFly.h"
 
 // XOBXOB APIKey (from your XOBXOB account page)
-// This devault is for the account User Name = "sandbox", PW = "sandbox"
 String APIKey = "0000-0000-0000-0000-0000";
 
 // Create XOBXOB_WiFly and WiFly Client
@@ -65,7 +64,7 @@ void setup() {
   digitalWrite (8, LOW);  
   
   // Open serial communications
-  Serial.begin(57600); while (!Serial);
+  Serial.begin(9600); while (!Serial);
 
   // Start up the WiFly
   Serial.print ("Beginning...");

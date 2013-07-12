@@ -54,7 +54,7 @@ class XOBXOB_Ethernet
     boolean  			loadStreamedResponse();
     void	 			echo(boolean);
     
-    String   			getMessage(String);              // Returns message contents from FSON response
+    String   			getMessage(String);               // Returns message contents from FSON response
 
   private:
   

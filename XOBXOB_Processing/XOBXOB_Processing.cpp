@@ -32,10 +32,9 @@
 #include "XOBXOB_Processing.h"
 
 // Constructor
-XOBXOB_Processing::XOBXOB_Processing(uint8_t *mac, String key)
+XOBXOB_Processing::XOBXOB_Processing(String key)
 {
-  // Save mac address and API key
-  _mac    = mac;  // Ignored for Processing connector
+  // Save API key
   _APIKey = key;
   
 }
