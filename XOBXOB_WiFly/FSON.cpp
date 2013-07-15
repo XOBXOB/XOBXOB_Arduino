@@ -154,7 +154,7 @@ String FSON::_findValue (int* i) {
   switch (_FSONString[*i]) {
     case '{' : _endDelimeter = '}'; break;
     case '[' : _endDelimeter = ']'; break;
-    case '"' : _endDelimeter = '"'; break;
+    case '\"' : _endDelimeter = '\"'; break;
     default  : _endDelimeter = ',';
   }
   
