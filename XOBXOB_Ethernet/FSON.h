@@ -22,6 +22,7 @@ class FSON
     
     void    initStreamScanner();               // Initializes the stream scanner
     boolean setStreamedObject(char c);         // Scans stream for an object delimeted by "{", "}"
+    String  decodeURI(String s);			   // Decodes and encoded value from string
 
   private:
   
@@ -53,6 +54,7 @@ class FSON
     String  _findName(int*);                   // For property scanning
     String  _findValue(int*);
     boolean _findChar(char, int*);             // Finds a char at current level
+    String	_hexChars;						   // For conversion from hex to decimal
 };
 
 #endif // FSON

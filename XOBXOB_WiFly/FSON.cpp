@@ -33,6 +33,7 @@
 
 // Constructor
 FSON::FSON () {
+	_hexChars = "0123456789ABCDEF";
 }
 
 // Initialize the string object
@@ -111,6 +112,25 @@ boolean FSON::setStreamedObject(char c) {
 
 }
 
+// URI Decodes a string
+String FSON::decodeURI(String s) {
+
+	String result = "";
+	int i = 0;
+	while (i < s.length()) {
+		if(s[i] != '%') {
+			result += s[i];
+		} else {
+			byte charNum = (_hexChars.indexOf(s[i+1]) << 4) + _hexChars.indexOf(s[i+2]);
+			result += char(charNum);
+			i += 2;
+		}
+		i += 1;
+	}
+	return (result);
+
+}
+
 // Finds an FSON property with name s
 String FSON::getProperty(String name) {
   
@@ -123,7 +143,7 @@ String FSON::getProperty(String name) {
   
   // Get value
   _scanPos += 1;
-  return (_findValue(&_scanPos));
+  return (decodeURI(_findValue(&_scanPos)));
 
 }
 
