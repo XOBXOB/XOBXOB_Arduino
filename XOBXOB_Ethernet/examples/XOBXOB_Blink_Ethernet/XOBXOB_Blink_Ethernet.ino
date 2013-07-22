@@ -32,64 +32,65 @@
 #include <Ethernet.h>
 #include <SPI.h>
 
-// Ethernet shield MAC address (possibly printed on label)
-byte mac[] = {  0x00, 0x00, 0x00, 0x00, 0x00, 0x00 };
+///////////////////////////////////////////////////////////
+//
+// Change these for your Ethernet Shield and your APIKey
+//
+// NOTE: the MAC address for your Ethernet Shield might be
+// printed on a label on the bottom of the shield. Your
+// APIKey will be found on your account dashboard when you
+// login to XOBXOB)
+//
 
-// XOBXOB APIKey (from your XOBXOB account page)
-String APIKey = "0000-0000-0000-0000-0000";
+byte mac[]    = { 0x00, 0x00, 0x00, 0x00, 0x00, 0x00 };
+String APIKey = "xxxx-xxxx-xxxx-xxxx-xxxx";
+
+///////////////////////////////////////////////////////////
+
 
 // Create XOBXOB object (for the Ethernet shield)
 XOBXOB_Ethernet XOB (mac, APIKey);
 
-// Response processing
-boolean done = true;
+// Variables for request timing
+boolean lastResponseReceived = true;
 long lastRequestTime = -20000;
-String lastMessage;
 
 void setup() {
   
-  // This is the LED pin
+  // Set the LED pin for output and turn it off
   pinMode (8, OUTPUT);
   digitalWrite (8, LOW);  
   
-  // Open serial communications and initialize XOBXOB
-  Serial.begin(9600); while (!Serial);
-  Serial.print ("Beginning...");
+  // Initialize XOBXOB
   XOB.init();
-  Serial.println ("Initialized.");
-  
-  // Setting echo to "true" will print out requests and reply characters to the Serial port for debugging
-  XOB.echo(false);
   
 }
 
 void loop()
 {
     
-  // Request every 4 seconds (but, only if done with previous request)
-  if (done && ((millis() - lastRequestTime) > 4*1000)) {
+  // New XOB request every 4 seconds (if previous response has been received)
+  if (lastResponseReceived && (abs(millis() - lastRequestTime) > 4*1000)) {
  
-    // Update done flag, and start waiting for the next interval
-    // Tend to the connection and response processor
-    done = false;
-    if (!XOB.connected()) {
-      Serial.print("Connecting...");
-      XOB.connect();
-      Serial.println("Done.");
-    }
-    XOB.initResponse();
-    
-    // Now, request information from XOB named "XOB"
+  	// if the connection has dropped, reconnect
+    while (!XOB.connected()) XOB.connect();
+
+    // Reset timer and response flags. Then, request "XOB" contents
+    lastResponseReceived = false;
     lastRequestTime = millis();
+    
     XOB.requestXOB("XOB");
+
   }
 
   // Load response a character at a time when it is available.
-  // If true is returned, that means a completed JSON object has been received
-  // If this is the first one (!done), then extract the "switch" message and 
-  // check to see if we should turn the LED on
+  // If loadStreamedResponse returns true, a completed response has been received
+  // Get the "switch" message from the XOB and turn the LED on/off
+  // NOTE: The message contents are returned with quotes. So, include them
+  // in the comparison statement.
+  if (!lastResponseReceived && XOB.loadStreamedResponse()) {
 
-  if (!done && XOB.loadStreamedResponse()) {
+    lastResponseReceived = true;
 
     String LED = XOB.getMessage("switch");
     if (LED == "\"ON\"") {
@@ -98,7 +99,6 @@ void loop()
       digitalWrite (8, LOW);
     }
     
-    done = true;
   }
 
 }

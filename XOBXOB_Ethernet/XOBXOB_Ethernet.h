@@ -1,6 +1,6 @@
 ///////////////////////////////////////////////////////////////
 //
-//  xobxob_Ethernet
+//  XOBXOB_Ethernet
 //
 //  Arduino interface to XOBXOB IoT platform
 //	For use with the Arduino Ethernet shield
@@ -49,19 +49,16 @@ class XOBXOB_Ethernet
     boolean  			connected ();
     void     			stop ();
     void     			requestXOB (String);
-    void     			updateXOB (String, String);
+    void     			updateXOB (String, int, String [][2]);
     void     			initResponse();
-    boolean  			loadStreamedResponse();
-    void	 			echo(boolean);
-    
+    boolean  			loadStreamedResponse();    
     String   			getMessage(String);               // Returns message contents from FSON response
 
   private:
   
     uint8_t* _mac;							   // MAC Address for Ethernet card
-    String   _APIKey;						   // APIKey for XOBXOB
-    boolean  _echo;							   // Echos requests and read data to serial port
     FSON _FSON;                                // FSON utilities
+    String _REQUEST_HEADER;                    // XOBXOB request header
 
 };
 

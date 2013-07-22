@@ -1,6 +1,6 @@
 ///////////////////////////////////////////////////////////////
 //
-//  XOBXOB_Processing
+//  XOBXOB_Connector
 //
 //  Arduino interface to XOBXOB IoT platform
 //	For use with the Processing "connector" application
@@ -28,39 +28,37 @@
 //  OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 //  THE SOFTWARE.// 
 
-#ifndef _xobxob_processing_h
-#define _xobxob_processing_h
+#ifndef _XOBXOB_Connector_h
+#define _XOBXOB_Connector_h
 
 #include <Arduino.h>
 #include "XOBXOB_Info.h"
 #include "FSON.h"
 
 // CLASS
-class XOBXOB_Processing
+class XOBXOB_Connector
 {
   
   public:
 
-    XOBXOB_Processing	(String);               // Constructor
+    XOBXOB_Connector	(String);               // Constructor
     void     			init();
     boolean  			connect ();
     boolean  			connected ();
     void     			stop ();
     void     			requestXOB (String);
-    void     			updateXOB (String, String);
+    void     			updateXOB (String, int, String [][2]);
+
     void     			initResponse();
-    boolean  			loadStreamedResponse();
-    void	 			echo(boolean);
-    
-    String   			getMessage(String);              // Returns message contents from FSON response
+    boolean  			loadStreamedResponse();    
+    String   			getMessage(String);
 
   private:
   
-    String   _APIKey;						   // APIKey for XOBXOB
-    boolean  _echo;							   // Echos requests and read data to serial port
-    FSON _FSON;                                // FSON utilities
+    FSON 				_FSON;                  // FSON utilities
+    String 				_REQUEST_HEADER;        // XOBXOB request header
 
 };
 
-#endif // XOBXOB_Processing
+#endif // XOBXOB_Connector
 

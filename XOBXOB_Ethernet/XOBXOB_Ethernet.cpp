@@ -38,7 +38,12 @@ XOBXOB_Ethernet::XOBXOB_Ethernet(uint8_t *mac, String key)
 {
   // Save mac address and API key
   _mac    = mac;
-  _APIKey = key;
+
+  // Build request header
+  _REQUEST_HEADER = _LF 
+  	+ "Host: " + XOBXOB_SERVER_NAME + _LF 
+  	+ "APIKey: " + key + _LF
+  	+ "Connection: keep-alive" + _LF + _LF;
   
 }
 
@@ -66,24 +71,23 @@ boolean XOBXOB_Ethernet::connected()
 // Make an HTTP GET request for XOB "x"
 void XOBXOB_Ethernet::requestXOB (String x)
 {
-    String request = "GET /v1/xobs/" + x + "?key=" + _APIKey + HOST_HEADER ;
-    if (_echo) {
-    	Serial.println ();
-    	Serial.println (request);
-    }
-    	
+    _FSON.initStreamScanner();
+    String request = "GET /v1/xobs/" + x + _REQUEST_HEADER ;    	
     _client.print(request);
 }
 
 // Make an HTTP PUT request for XOB "x"
-void XOBXOB_Ethernet::updateXOB (String x, String query)
+void XOBXOB_Ethernet::updateXOB (String x, int n, String messageList [][2])
 {
-    String request = "PUT /v1/xobs/" + x + "?key=" + _APIKey + '&' + query + HOST_HEADER ;
-    if (_echo) {
-		Serial.println ();
-	    Serial.println (request);
-    }
-    _client.print(request);
+  String query = "";
+  for (int i=0; i<n; i++) {
+  	query += (((i==0)?"?":"&") + messageList[i][0] + '=' + _FSON.encodeURIComponent(messageList[i][1]));
+  }
+   
+  _FSON.initStreamScanner();
+  String request = "PUT /v1/xobs/" + x + query + _REQUEST_HEADER ;
+  _client.print(request);
+    
 }
 
 void XOBXOB_Ethernet::initResponse()
@@ -95,7 +99,6 @@ boolean XOBXOB_Ethernet::loadStreamedResponse()
 {
   if (_client.available()) {
     char c = _client.read();
-    if (_echo) Serial.print(c);
     return (_FSON.setStreamedObject(c));
   } else {
     return false;
@@ -110,8 +113,4 @@ void XOBXOB_Ethernet::stop()
 String XOBXOB_Ethernet::getMessage(String propertyName)
 {
   return (_FSON.getProperty(propertyName));
-}
-
-void XOBXOB_Ethernet::echo (boolean e) {
-	_echo = e;
 }

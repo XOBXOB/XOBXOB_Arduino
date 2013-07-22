@@ -6,7 +6,7 @@
 # Datatypes (KEYWORD1)
 #######################################
 
-XOBXOB_Processing	KEYWORD1
+XOBXOB_Connector	KEYWORD1
 FSON	KEYWORD1
 
 #######################################

@@ -32,23 +32,38 @@
 #include <XOBXOB_WiFly.h>
 
 // Constructor
-XOBXOB_WiFly::XOBXOB_WiFly(String APIKey)
+XOBXOB_WiFly::XOBXOB_WiFly(String key)
 {
-	_APIKey = APIKey;
+
+  // Build request header
+  _REQUEST_HEADER = _LF 
+  	+ "Host: " + XOBXOB_SERVER_NAME + _LF 
+  	+ "APIKey: " + key + _LF
+  	+ "Connection: keep-alive" + _LF + _LF;
+
 }
 
 // Make an HTTP GET request for XOB "x"
 String XOBXOB_WiFly::requestXOB (String x)
 {
-    String request = "GET /v1/xobs/" + x + "?key=" + _APIKey + HOST_HEADER;
+    _FSON.initStreamScanner();
+    String request = "GET /v1/xobs/" + x + _REQUEST_HEADER;
 	return (request);
 }
 
 // Make an HTTP PUT request for XOB "x"
-String XOBXOB_WiFly::updateXOB (String x, String query)
+String XOBXOB_WiFly::updateXOB (String x, int n, String messageList [][2])
 {
-    String request = "PUT /v1/xobs/" + x + "?key=" + _APIKey + '&' + query + HOST_HEADER ;
-	return (request);
+  
+  String query = "";
+  for (int i=0; i<n; i++) {
+  	query += (((i==0)?"?":"&") + messageList[i][0] + '=' + _FSON.encodeURIComponent(messageList[i][1]));
+  }
+  
+  _FSON.initStreamScanner();
+  String request = "PUT /v1/xobs/" + x + query + _REQUEST_HEADER ;
+  return (request);
+
 }
 
 void XOBXOB_WiFly::initResponse()

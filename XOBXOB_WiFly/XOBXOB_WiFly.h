@@ -48,11 +48,12 @@ class XOBXOB_WiFly
     boolean  			loadStreamedResponse(char);
     
     String   			getMessage(String);              // Returns message contents from FSON response
+    String     			updateXOB (String, int, String [][2]);
 
   private:
   
-  	String				_APIKey;
     FSON	 			_FSON;                            // FSON utilities
+    String 				_REQUEST_HEADER;                  // XOBXOB request header
 
 };
 

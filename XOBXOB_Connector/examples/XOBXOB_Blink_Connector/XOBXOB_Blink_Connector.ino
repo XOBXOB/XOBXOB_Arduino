@@ -1,8 +1,8 @@
 ////////////////////////////////////////////////////////////////////////////
 //
-//  XOBXOB Blink :: Processing
+//  XOBXOB Blink :: Connector
 // 
-//  This sketch connects to the XOBXOB IoT platform using the Processing Connector application 
+//  This sketch connects to the XOBXOB IoT platform using the Connector application 
 // 
 //
 //  The MIT License (MIT)
@@ -27,30 +27,32 @@
 //  OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 //  THE SOFTWARE.// 
 
-// All of these includes are required (even though the Ethernet board isn't used
-// Arduino still compiles it and needs the Ethernet and SPI includes)
-#include <XOBXOB_Processing.h>
-#include <Ethernet.h>
-#include <SPI.h>
+#include <XOBXOB_Connector.h>
 
-// XOBXOB APIKey (from your XOBXOB account page)
-String APIKey = "0000-0000-0000-0000-0000";
+///////////////////////////////////////////////////////////
+//
+// Change this for your API key (from your account dashboard)
+//
+
+String APIKey = "xxxx-xxxx-xxxx-xxxx-xxxx";
+
+///////////////////////////////////////////////////////////
 
 // Create XOBXOB object
-XOBXOB_Processing XOB (APIKey);
+XOBXOB_Connector XOB (APIKey);
 
 // Response processing
-boolean done = true;
+boolean lastResponseReceived = true;
 long lastRequestTime = -20000;
 String lastMessage;
 
 void setup() {
   
-  // Pin for LED
+  // Set LED pin to output. And, turn it off
   pinMode (8, OUTPUT);
   digitalWrite (8, LOW);  
   
-  // Open serial communications and initialize XOBXOB
+  // Initialize XOBXOB
   XOB.init();
   
 }
@@ -58,20 +60,17 @@ void setup() {
 void loop()
 {
     
-  // Request every 4 seconds (but, only if done with previous request)
-  if (done && ((millis() - lastRequestTime) > 4*1000)) {
+  // New XOB request every 4 seconds (if previous response has been received)
+  if (lastResponseReceived && ((millis() - lastRequestTime) > 4*1000)) {
  
-    // Update done flag, and start waiting for the next interval
-    // Tend to the connection and response processor
-    done = false;
-    if (!XOB.connected()) {
-      XOB.connect();
-    }
-    XOB.initResponse();
-    
-    // Now, request information from XOB named "XOB"
+    // Connect if not connected
+    while (!XOB.connected()) XOB.connect();    
+
+    // Update response flag and timer. Then, request information from XOB named "XOB"
+    lastResponseReceived = false;
     lastRequestTime = millis();
     XOB.requestXOB("XOB");
+    
   }
 
   // Load response a character at a time when it is available.
@@ -79,7 +78,7 @@ void loop()
   // If this is the first one (!done), then extract the "switch" message and 
   // check to see if we should turn the LED on
 
-  if (!done && XOB.loadStreamedResponse()) {
+  if (!lastResponseReceived && XOB.loadStreamedResponse()) {
 
     String LED = XOB.getMessage("switch");
     if (LED == "\"ON\"") {
@@ -88,7 +87,7 @@ void loop()
       digitalWrite (8, LOW);
     }
     
-    done = true;
+    lastResponseReceived = true;
   }
 
 }

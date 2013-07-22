@@ -1,9 +1,9 @@
 ///////////////////////////////////////////////////////////////
 //
-//  XOBXOB_Processing.cpp
+//  XOBXOB_Connector.cpp
 //
 //  Arduino classes for communicating with XOBXOB IoT platform
-//  Using the Processing internet connector application
+//  Using the internet connector application
 //
 //
 //  The MIT License (MIT)
@@ -29,56 +29,69 @@
 //  THE SOFTWARE.// 
 
 #include <Arduino.h>
-#include "XOBXOB_Processing.h"
+#include "XOBXOB_Connector.h"
 
 // Constructor
-XOBXOB_Processing::XOBXOB_Processing(String key)
+XOBXOB_Connector::XOBXOB_Connector(String key)
 {
-  // Save API key
-  _APIKey = key;
+
+  // Build request header
+  _REQUEST_HEADER = _LF 
+  	+ "Host: " + XOBXOB_SERVER_NAME + _LF 
+  	+ "APIKey: " + key + _LF
+  	+ "Connection: keep-alive" + _LF + _LF;
   
 }
 
 // Initialize
-void XOBXOB_Processing::init ()
+void XOBXOB_Connector::init ()
 {
 
-  // Start the Processing connection
+  // Start the serial connection
   Serial.begin (57600);
 
 }
 
 // Connect to XOBXOB server
-boolean XOBXOB_Processing::connect ()
+boolean XOBXOB_Connector::connect ()
 {
   // NOP
 }
       
-boolean XOBXOB_Processing::connected()
+boolean XOBXOB_Connector::connected()
 {
   return true;
 }
 
 // Make an HTTP GET request for XOB "x"
-void XOBXOB_Processing::requestXOB (String x)
+void XOBXOB_Connector::requestXOB (String x)
 {
-    String request = "GET /v1/xobs/" + x + "?key=" + _APIKey + HOST_HEADER ;
-	Serial.println (request);
+  _FSON.initStreamScanner();
+  String request = "GET /v1/xobs/" + x + _REQUEST_HEADER ;
+  Serial.println (request);
 }
 
 // Make an HTTP PUT request for XOB "x"
-void XOBXOB_Processing::updateXOB (String x, String query)
+void XOBXOB_Connector::updateXOB (String x, int n, String messageList [][2])
 {
-    String request = "PUT /v1/xobs/" + x + "?key=" + _APIKey + '&' + query + HOST_HEADER ;
-    Serial.println (request);
+  
+  String query = "";
+  for (int i=0; i<n; i++) {
+  	query += (((i==0)?"?":"&") + messageList[i][0] + '=' + _FSON.encodeURIComponent(messageList[i][1]));
+  }
+   
+  _FSON.initStreamScanner();
+  String request = "PUT /v1/xobs/" + x + query + _REQUEST_HEADER ;
+  Serial.println (request);
+  
 }
 
-void XOBXOB_Processing::initResponse()
+void XOBXOB_Connector::initResponse()
 {
   _FSON.initStreamScanner();
 }
 
-boolean XOBXOB_Processing::loadStreamedResponse()
+boolean XOBXOB_Connector::loadStreamedResponse()
 {
   if (Serial.available()) {
     char c = Serial.read();
@@ -88,16 +101,12 @@ boolean XOBXOB_Processing::loadStreamedResponse()
   }
 }
 
-void XOBXOB_Processing::stop()
+void XOBXOB_Connector::stop()
 {
   // NOP
 }
 
-String XOBXOB_Processing::getMessage(String propertyName)
+String XOBXOB_Connector::getMessage(String propertyName)
 {
   return (_FSON.getProperty(propertyName));
-}
-
-void XOBXOB_Processing::echo (boolean e) {
-	// NOP
 }

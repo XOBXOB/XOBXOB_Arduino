@@ -15,14 +15,15 @@ class FSON
 {
   public:
 
-    FSON ();                                 // Constructor
+    FSON ();                                   // Constructor
     void    setObject (String s);              // Initializes the object with a string
     String  getObject ();                      // Returns current source object
     String  getProperty (String name);         // Return a property string by name
     
     void    initStreamScanner();               // Initializes the stream scanner
     boolean setStreamedObject(char c);         // Scans stream for an object delimeted by "{", "}"
-    String  decodeURI(String s);			   // Decodes and encoded value from string
+    String  decodeURIComponent(String s);      // Decodes an encoded value from string
+    String  encodeURIComponent(String s);      // Encodes to URL-safe string
 
   private:
   
@@ -54,7 +55,7 @@ class FSON
     String  _findName(int*);                   // For property scanning
     String  _findValue(int*);
     boolean _findChar(char, int*);             // Finds a char at current level
-    String	_hexChars;						   // For conversion from hex to decimal
+    String	_hexChars;						   // For conversion between hex and decimal
 };
 
 #endif // FSON

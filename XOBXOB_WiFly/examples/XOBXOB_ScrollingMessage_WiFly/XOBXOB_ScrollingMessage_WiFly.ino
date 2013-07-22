@@ -37,6 +37,11 @@
 //
 //	 See the note below for UNSECURED networks
 //
+//	 Also, add your APIKey below (from your account Dashboard)
+
+#include "credentials.h"
+String APIKey = "xxxx-xxxx-xxxx-xxxx-xxxx";
+
 //
 ///////////////////////////////////////////////////////////////////////////
 
@@ -49,49 +54,38 @@
 #include "LEDMatrix7219.h"
 #include "vincent90.h"
 
-// XOBXOB APIKey (from your XOBXOB account page)
-String APIKey = "0000-0000-0000-0000-0000";
-
 // Create XOBXOB_WiFly and WiFly Client
 XOBXOB_WiFly XOB (APIKey);
 Client WiFlyClient (XOBXOB_SERVER_NAME, XOBXOB_SERVER_PORT);
 
 // Response processing
-boolean done = true;
+boolean lastResponseReceived = true;
 long lastRequestTime = -20000;
 long timerStart;
 
 // Message variables
-int charNum = 0, nextCharNum;
+int charNum = -1;
+int nextCharNum;
 String message = " Waiting... ";
+String newMessage;
 
 // Create the display object (use default parameters: 1, 3, 4, 5)
 LEDMatrix7219 LEDMatrix(1, 15);
 
 void setup() {
   
-  // Open serial communications
-  Serial.begin(9600); while (!Serial);
-
   // Start up the WiFly
-  Serial.print ("Beginning...");
   WiFly.begin();
   
   // Try to join network
   if (!WiFly.join(ssid, password)) {				// for SECURED NETWORK
   //if (!WiFly.join(ssid)) {					// for UNSECURED NETWORK
 
-    Serial.println("Unable to join network.");
     while (1);
   }  
-  Serial.println ("Network OK.");
-  
-  Serial.print("Connecting...");
-  if (WiFlyClient.connect()) {
-    Serial.println("Done.");
-  } else {
-    Serial.println("Ooops.");
-  }
+
+  // Connect to xobxob.com
+  WiFlyClient.connect();
   
 }
 
@@ -102,17 +96,14 @@ void loop()
   //
   // XOBXOB GET Request
 
-  // Request every 10 seconds (but, only if done with previous request)
-  if (done && ((millis() - lastRequestTime) > 10*1000)) {
+  // Request every 10 seconds (but, only if done with previous response)
+  if (lastResponseReceived && ((millis() - lastRequestTime) > 10*1000)) {
  
-    // Update done flag, and start waiting for the next interval
-    // Tend to the connection and response processor
-    done = false;
-    XOB.initResponse();
-    
-    // Now, request information from XOB named "XOB"
+    // Update flag and timer, and request information from XOB named "XOB"
+    lastResponseReceived = false;
     lastRequestTime = millis();
     WiFlyClient.println(XOB.requestXOB("XOB"));
+    
   }
 
   ////////////////////////////////////////////////////////
@@ -136,18 +127,22 @@ void loop()
       c++;
     };
   
-    // Load response a character at a time when it is available.
-    // If true is returned, that means a completed JSON object has been received
-    // If this is the first one (!done), then extract the "switch" message and 
-    // check to see if we should turn the LED on
-
+    // Loop for 75 milliseconds loading response a character at a time when it is available
+    // (this is so we can load the response faster during frames of the message animation)
+    // If loadStreamedResponse(c) is true, a completed object has been received
+    // So, set the lastResponseReceived flag to true and extract the new message
+    // If the new message is different from the previous one, switch to the new message
     while (abs(millis() - timerStart) < 75) {
       if (WiFlyClient.available()) {
         char c = WiFlyClient.read();
-        if (!done && XOB.loadStreamedResponse(c)) {
-          message = XOB.getMessage("text");
-          message = message.substring(1, message.length()-1);
-          done = true;
+        if (!lastResponseReceived && XOB.loadStreamedResponse(c)) {
+          lastResponseReceived = true;
+          newMessage = XOB.getMessage("text");
+          newMessage = newMessage.substring(1, newMessage.length()-1);
+          if (!message.equals(newMessage)) {
+          	charNum = -1;
+          	message = newMessage;
+          }
         }
       }
     }

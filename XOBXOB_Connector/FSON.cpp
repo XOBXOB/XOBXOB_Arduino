@@ -113,7 +113,7 @@ boolean FSON::setStreamedObject(char c) {
 }
 
 // URI Decodes a string
-String FSON::decodeURI(String s) {
+String FSON::decodeURIComponent(String s) {
 
 	String result = "";
 	int i = 0;
@@ -131,6 +131,26 @@ String FSON::decodeURI(String s) {
 
 }
 
+// URI Encodes a string
+String FSON::encodeURIComponent(String s) {
+
+	char esc[4] = "%  ";
+	byte c;
+	String result = "";
+	for (int i=0; i < s.length(); i++) {
+		c = byte(s[i]);
+		if((c>47&&c<58) || (c>64&&c<91) || (c>96&&c<123)) {
+			result += char(c);
+		} else {
+			esc[1] = _hexChars.charAt(c>>4);
+			esc[2] = _hexChars.charAt(c&0x0F);
+			result += esc;
+		}
+	}
+	return (result);
+
+}
+
 // Finds an FSON property with name s
 String FSON::getProperty(String name) {
   
@@ -143,7 +163,8 @@ String FSON::getProperty(String name) {
   
   // Get value
   _scanPos += 1;
-  return (decodeURI(_findValue(&_scanPos)));
+//  return (decodeURIComponent(_findValue(&_scanPos)));
+  return (_findValue(&_scanPos));
 
 }
 

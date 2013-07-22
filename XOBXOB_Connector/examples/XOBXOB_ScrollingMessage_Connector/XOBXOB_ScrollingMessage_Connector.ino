@@ -1,9 +1,9 @@
 
 ////////////////////////////////////////////////////////////////////////////
 //
-//  XOBXOB_ScrollingMessage :: Ethernet Shield :: MAX7219 LED Matrix
+//  XOBXOB_ScrollingMessage :: Connector :: MAX7219 LED Matrix
 // 
-//  This sketch connects to the XOBXOB IoT platform using an Arduino Ethernet shield. 
+//  This sketch connects to the XOBXOB IoT platform using the XOBXOB Connector application 
 // 
 //
 //  The MIT License (MIT)
@@ -33,28 +33,20 @@
 #include "LEDMatrix7219.h"
 #include "vincent90.h"
 
-#include <XOBXOB_Ethernet.h>
-#include <Ethernet.h>
-#include <SPI.h>
+#include <XOBXOB_Connector.h>
 
 ///////////////////////////////////////////////////////////
 //
-// Change these for your Ethernet Shield and your APIKey
-//
-// NOTE: the MAC address for your Ethernet Shield might be
-// printed on a label on the bottom of the shield. Your
-// APIKey will be found on your account dashboard when you
-// login to XOBXOB)
+// Change this for your API key (from your account dashboard)
 //
 
-byte mac[]    = { 0x00, 0x00, 0x00, 0x00, 0x00, 0x00 };
 String APIKey = "xxxx-xxxx-xxxx-xxxx-xxxx";
 
 ///////////////////////////////////////////////////////////
 
 
 // Create XOBXOB object (for the Ethernet shield)
-XOBXOB_Ethernet XOB (mac, APIKey);
+XOBXOB_Connector XOB (APIKey);
 
 // Response processing
 boolean lastResponseReceived = true;
@@ -87,10 +79,8 @@ void loop() {
   // Request every 10 seconds (but, only if done with previous response)
   if (lastResponseReceived && ( (millis() - lastRequestTime) > 10*1000)) {
 
-    // Make sure connection is still valid
-    while (!XOB.connected()) {
-      XOB.connect();
-    }
+    // Connect if not connected
+    while (!XOB.connected()) XOB.connect();    
 
     // Now, update lastResponseReceived flag and timer, and
     // request information from XOB named "XOB"

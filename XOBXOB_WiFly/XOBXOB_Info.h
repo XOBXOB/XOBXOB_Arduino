@@ -7,6 +7,5 @@
 #define XOBXOB_SERVER_PORT 80
 
 static String _LF = "\x0A";
-static String HOST_HEADER = _LF + "Host: " + XOBXOB_SERVER_NAME + _LF + _LF;
 
 #endif
