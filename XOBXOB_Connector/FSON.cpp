@@ -151,8 +151,15 @@ String FSON::encodeURIComponent(String s) {
 
 }
 
-// Finds an FSON property with name s
+// Finds an FSON property with name and returns it unescaped
 String FSON::getProperty(String name) {
+  
+  return (unescape(getRawProperty(name)));
+
+}
+
+// Finds an FSON property with name
+String FSON::getRawProperty(String name) {
   
   _scanPos = 1;
   
@@ -163,10 +170,22 @@ String FSON::getProperty(String name) {
   
   // Get value
   _scanPos += 1;
-//  return (decodeURIComponent(_findValue(&_scanPos)));
   return (_findValue(&_scanPos));
 
 }
+
+// Remove escape characters from string
+String FSON::unescape(String s) {
+	String newS = "";
+	boolean escape = false;
+	for(int i = 0; i<s.length(); i++) {  
+		char c = s.charAt(i);
+                escape = (!escape && ('\\' == c));
+                if (!escape) newS += c;
+      	}
+	return newS;
+}
+
 
 //////////////////////////////////////////////////////
 // Private methods

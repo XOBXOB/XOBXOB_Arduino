@@ -43,22 +43,22 @@ class XOBXOB_Ethernet
   
   public:
 
-    XOBXOB_Ethernet   	(uint8_t*, String);               // Constructor
-    void     			init();
-    boolean  			connect ();
-    boolean  			connected ();
-    void     			stop ();
-    void     			requestXOB (String);
-    void     			updateXOB (String, int, String [][2]);
-    void     			initResponse();
-    boolean  			loadStreamedResponse();    
-    String   			getMessage(String);               // Returns message contents from FSON response
+    XOBXOB_Ethernet   	(uint8_t*, String);               		// Constructor
+    void     			init();									// Constructor helper routine
+    boolean  			connect ();								// To connect to xobxob
+    boolean  			connected ();							// True/False for connected
+    void     			stop ();								// Stops connection
+    void     			requestXOB (String);					// Requests the contents of a XOB
+    void     			updateXOB (String, int, String [][2]);	// Updates contents of XOB with one or more messages
+    void     			initResponse();							// Initializes streaming buffer before sending request
+    boolean  			loadStreamedResponse();    				// Load response one char at a time (test for end of object)
+    String   			getMessage(String);               		// Returns named message contents from FSON response
 
   private:
   
-    uint8_t* _mac;							   // MAC Address for Ethernet card
-    FSON _FSON;                                // FSON utilities
-    String _REQUEST_HEADER;                    // XOBXOB request header
+    uint8_t* _mac;							   					// MAC Address for Ethernet card
+    FSON _FSON;                                					// FSON utilities
+    String _REQUEST_HEADER;                    					// XOBXOB request header (set in Constructor)
 
 };
 

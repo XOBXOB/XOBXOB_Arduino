@@ -41,19 +41,18 @@ class XOBXOB_WiFly
   
   public:
 
-    					XOBXOB_WiFly (String); 			  // Constructor
-    String     			requestXOB (String);
-    String     			updateXOB (String, String);
-    void     			initResponse();
-    boolean  			loadStreamedResponse(char);
+    					XOBXOB_WiFly (String); 			  		// Constructor
+    void     			initResponse();							// Initializes response before request/update
+    boolean  			loadStreamedResponse(char);				// Load the response (but analyze it while it's streaming)
     
-    String   			getMessage(String);              // Returns message contents from FSON response
-    String     			updateXOB (String, int, String [][2]);
+    String     			requestXOB (String);					// Requests contents of a XOB
+    String     			updateXOB (String, int, String [][2]);	// Updates a XOB with one or more messages
+    String   			getMessage(String);              		// Returns message contents from FSON response
 
   private:
   
-    FSON	 			_FSON;                            // FSON utilities
-    String 				_REQUEST_HEADER;                  // XOBXOB request header
+    FSON	 			_FSON;                            		// Class FSON utilities
+    String 				_REQUEST_HEADER;                  		// XOBXOB request header (set in constructor)
 
 };
 

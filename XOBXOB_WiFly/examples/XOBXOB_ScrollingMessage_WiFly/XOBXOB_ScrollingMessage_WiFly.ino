@@ -32,22 +32,17 @@
 //
 //	 IMPORTANT
 //
-//	 To connect to YOUR network,
-//	 set network SSID and PASSWORD in credentials.h
+//	 To connect to your network, insert your network SSID and PASSWORD (see note below for UNSECURED networks)
+//	 To connect to your XOBXOB account insert your APIKey below (from your account Dashboard)
 //
-//	 See the note below for UNSECURED networks
-//
-//	 Also, add your APIKey below (from your account Dashboard)
 
-#include "credentials.h"
+char ssid[] = "your_wifi_ssid";
+char password[] = "your_wifi_password";
 String APIKey = "xxxx-xxxx-xxxx-xxxx-xxxx";
 
 //
 ///////////////////////////////////////////////////////////////////////////
 
-#include "credentials.h"
-
-// Other Includes
 #include <WiFly.h>
 #include "XOBXOB_WiFly.h"
 #include <"avr/pgmspace.h">
@@ -66,7 +61,7 @@ long timerStart;
 // Message variables
 int charNum = -1;
 int nextCharNum;
-String message = " Waiting... ";
+String message = "  XOBXOB  ";
 String newMessage;
 
 // Create the display object (use default parameters: 1, 3, 4, 5)
@@ -78,14 +73,14 @@ void setup() {
   WiFly.begin();
   
   // Try to join network
-  if (!WiFly.join(ssid, password)) {				// for SECURED NETWORK
-  //if (!WiFly.join(ssid)) {					// for UNSECURED NETWORK
+  while (!WiFly.join(ssid, password)) delay (5000);
 
-    while (1);
-  }  
-
+/* Use this line rather than the above for unsecured networks
+  while (!WiFly.join(ssid)) delay (5000);
+*/
+ 
   // Connect to xobxob.com
-  WiFlyClient.connect();
+  while (!WiFlyClient.connect()) delay (5000);
   
 }
 

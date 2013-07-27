@@ -18,13 +18,15 @@ class FSON
     FSON ();                                   // Constructor
     void    setObject (String s);              // Initializes the object with a string
     String  getObject ();                      // Returns current source object
-    String  getProperty (String name);         // Return a property string by name
+    String  getProperty (String name);         // Return a property string by name. Escape chars removed
+    String	getRawProperty (String name);	   // Returns a property with escape characters intact
     
     void    initStreamScanner();               // Initializes the stream scanner
     boolean setStreamedObject(char c);         // Scans stream for an object delimeted by "{", "}"
     String  decodeURIComponent(String s);      // Decodes an encoded value from string
     String  encodeURIComponent(String s);      // Encodes to URL-safe string
-
+	String	unescape(String s);				   // Simple unescaping of string (removes '\' characters)
+	
   private:
   
     String  _FSONString;                       // String storage for JSON
