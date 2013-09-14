@@ -47,6 +47,7 @@ class XOBXOB_Connector
     boolean  			connected ();
     void     			stop ();
     void     			requestXOB (String);
+    void				updateXOB (String, String, String);
     void     			updateXOB (String, int, String [][2]);
 
     void     			initResponse();

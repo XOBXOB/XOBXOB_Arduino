@@ -166,7 +166,7 @@ String FSON::getRawProperty(String name) {
   // Look for name
   _scanState = SCAN_STATE_NAME_SEEKING;
   while ((_findName(&_scanPos) != name) && (_scanPos < _FSONStringLength));
-  if (_FSONStringLength <= _scanPos) return (NULL);
+  if (_FSONStringLength <= _scanPos) return (String(NULL));
   
   // Get value
   _scanPos += 1;
@@ -192,11 +192,11 @@ String FSON::unescape(String s) {
 
 String FSON::_findName (int* i) {
   
-  if (!_findChar ('\"', i) || (_FSONStringLength <= *i)) return (NULL);
+  if (!_findChar ('\"', i) || (_FSONStringLength <= *i)) return (String(NULL));
   *i += 1;
  
   int theStart = *i;
-  if (!_findChar ('\"', i)) return (NULL);
+  if (!_findChar ('\"', i)) return (String(NULL));
   
   return (_FSONString.substring(theStart, *i));
 
@@ -204,7 +204,7 @@ String FSON::_findName (int* i) {
 
 String FSON::_findValue (int* i) {
   
-  if (!_findChar (':', i) || (_FSONStringLength <= *i)) return (NULL);
+  if (!_findChar (':', i) || (_FSONStringLength <= *i)) return (String(NULL));
   *i += 1;
   
   // Skip any spaces

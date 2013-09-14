@@ -48,7 +48,7 @@ void XOBXOB_Connector::init ()
 {
 
   // Start the serial connection
-  Serial.begin (57600);
+  Serial.begin (57600); while (!Serial);
 
 }
 
@@ -63,12 +63,28 @@ boolean XOBXOB_Connector::connected()
   return true;
 }
 
-// Make an HTTP GET request for XOB "x"
+// Make an HTTP GET request for one or more messages on XOB "x"
 void XOBXOB_Connector::requestXOB (String x)
 {
   _FSON.initStreamScanner();
   String request = "GET /v1/xobs/" + x + _REQUEST_HEADER ;
   Serial.println (request);
+}
+
+// Make an HTTP PUT request for a single message on XOB "x"
+void XOBXOB_Connector::updateXOB (String xobName, String messageName, String messageContent)
+{
+
+  // If the XOB or message are not specified, return. Empty messageContent is OK
+  if ((xobName.length() == 0) || (messageName.length() == 0)) return;
+  
+  // Initialize the stream scanner
+  _FSON.initStreamScanner();
+  
+  // Issue the PUT request 
+  String request = "PUT /v1/xobs/" + xobName + "?" + messageName + "=" + messageContent + _REQUEST_HEADER ;
+  Serial.println (request);
+
 }
 
 // Make an HTTP PUT request for XOB "x"

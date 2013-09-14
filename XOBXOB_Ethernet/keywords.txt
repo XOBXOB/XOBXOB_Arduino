@@ -20,7 +20,8 @@ updateXOB	KEYWORD2
 initResponse	KEYWORD2
 loadStreamedResponse	KEYWORD2
 stop	KEYWORD2
-getProperty	KEYWORD2
+getMessage	KEYWORD2
+init	KEYWORD2
 
 #######################################
 # Constants (LITERAL1)
