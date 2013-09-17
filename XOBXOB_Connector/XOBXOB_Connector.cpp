@@ -71,7 +71,7 @@ void XOBXOB_Connector::requestXOB (String x)
   Serial.println (request);
 }
 
-// Make an HTTP PUT request for a single message on XOB "x"
+// Make an HTTP PUT request for a single message on XOB "xobName"
 void XOBXOB_Connector::updateXOB (String xobName, String messageName, String messageContent)
 {
 
@@ -82,7 +82,7 @@ void XOBXOB_Connector::updateXOB (String xobName, String messageName, String mes
   _FSON.initStreamScanner();
   
   // Issue the PUT request 
-  String request = "PUT /v1/xobs/" + xobName + "?" + messageName + "=" + messageContent + _REQUEST_HEADER ;
+  String request = "PUT /v1/xobs/" + xobName + "?" + messageName + "=" + _FSON.encodeURIComponent(messageContent) + _REQUEST_HEADER ;
   Serial.println (request);
 
 }

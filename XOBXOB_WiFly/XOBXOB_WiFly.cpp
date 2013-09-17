@@ -51,6 +51,22 @@ String XOBXOB_WiFly::requestXOB (String x)
 	return (request);
 }
 
+// Make an HTTP PUT request for a single message on XOB "x"
+String XOBXOB_WiFly::updateXOB (String xobName, String messageName, String messageContent)
+{
+
+  // If the XOB or message are not specified, return. Empty messageContent is OK
+  if ((xobName.length() == 0) || (messageName.length() == 0)) return (String(NULL));
+  
+  // Initialize the stream scanner
+  _FSON.initStreamScanner();
+  
+  // Return the PUT request 
+  String request = "PUT /v1/xobs/" + xobName + "?" + messageName + "=" + _FSON.encodeURIComponent(messageContent) + _REQUEST_HEADER ;
+  return (request);
+
+}
+
 // Make an HTTP PUT request for XOB "x"
 String XOBXOB_WiFly::updateXOB (String x, int n, String messageList [][2])
 {
@@ -60,7 +76,10 @@ String XOBXOB_WiFly::updateXOB (String x, int n, String messageList [][2])
   	query += (((i==0)?"?":"&") + messageList[i][0] + '=' + _FSON.encodeURIComponent(messageList[i][1]));
   }
   
+  // Initialize the stream scanner
   _FSON.initStreamScanner();
+  
+  // Return the PUT request
   String request = "PUT /v1/xobs/" + x + query + _REQUEST_HEADER ;
   return (request);
 

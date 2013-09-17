@@ -42,10 +42,12 @@ class XOBXOB_WiFly
   public:
 
     					XOBXOB_WiFly (String); 			  		// Constructor
+    					
     void     			initResponse();							// Initializes response before request/update
     boolean  			loadStreamedResponse(char);				// Load the response (but analyze it while it's streaming)
     
     String     			requestXOB (String);					// Requests contents of a XOB
+    String				updateXOB (String, String, String);		// Updates a XOB with a single message
     String     			updateXOB (String, int, String [][2]);	// Updates a XOB with one or more messages
     String   			getMessage(String);              		// Returns message contents from FSON response
 

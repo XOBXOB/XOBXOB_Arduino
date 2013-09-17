@@ -48,12 +48,15 @@ class XOBXOB_Ethernet
     boolean  			connect ();								// To connect to xobxob
     boolean  			connected ();							// True/False for connected
     void     			stop ();								// Stops connection
-    void     			requestXOB (String);					// Requests the contents of a XOB
-    void     			updateXOB (String, int, String [][2]);	// Updates contents of XOB with one or more messages
+    
     void     			initResponse();							// Initializes streaming buffer before sending request
     boolean  			loadStreamedResponse();    				// Load response one char at a time (test for end of object)
-    String   			getMessage(String);               		// Returns named message contents from FSON response
 
+    void     			requestXOB (String);					// Requests the contents of a XOB
+    void				updateXOB (String, String, String);		// Updates a XOB with a single message
+    void     			updateXOB (String, int, String [][2]);	// Updates contents of XOB with one or more messages
+    String   			getMessage(String);               		// Returns named message contents from FSON response
+    
   private:
   
     uint8_t* _mac;							   					// MAC Address for Ethernet card

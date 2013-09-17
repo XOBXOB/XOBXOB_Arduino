@@ -41,18 +41,19 @@ class XOBXOB_Connector
   
   public:
 
-    XOBXOB_Connector	(String);               // Constructor
-    void     			init();
-    boolean  			connect ();
-    boolean  			connected ();
-    void     			stop ();
-    void     			requestXOB (String);
-    void				updateXOB (String, String, String);
-    void     			updateXOB (String, int, String [][2]);
+    XOBXOB_Connector	(String);               				// Constructor
+    void     			init();									// Constructor helper routine
+    boolean  			connect ();								// To connect to xobxob
+    boolean  			connected ();							// True/False for connected
+    void     			stop ();								// Stops connection
 
-    void     			initResponse();
-    boolean  			loadStreamedResponse();    
-    String   			getMessage(String);
+    void     			initResponse();							// Initializes response before request/update
+    boolean  			loadStreamedResponse();					// Load the response (but analyze it while it's streaming)
+
+    void     			requestXOB (String);					// Requests contents of a XOB
+    void				updateXOB (String, String, String);		// Updates a XOB with a single message
+    void     			updateXOB (String, int, String [][2]);	// Updates a XOB with one or more messages
+    String   			getMessage(String);              		// Returns message contents from FSON response
 
   private:
   
