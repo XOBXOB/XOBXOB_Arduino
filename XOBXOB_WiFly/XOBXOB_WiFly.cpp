@@ -62,7 +62,7 @@ String XOBXOB_WiFly::updateXOB (String xobName, String messageName, String messa
   _FSON.initStreamScanner();
   
   // Return the PUT request 
-  String request = "PUT /v1/xobs/" + xobName + "?" + messageName + "=" + _FSON.encodeURIComponent(messageContent) + _REQUEST_HEADER ;
+  String request = "PUT /v1/xobs/" + xobName + "?" + messageName + "=" + _FSON.encodeURIComponent(messageContent) + _REQUEST_HEADER;
   return (request);
 
 }
