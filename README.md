@@ -57,7 +57,11 @@ Requests information about the XOB, XOB_Name.
 
 x.updateXOB(XOB_Name, n, messageList[][2]);  
 
-XOB_Name is the name of the XOB. The messageList is a two dimensional array with messages and contents. For each row, the first element is the message name, the second element is the message content -- both are strings. "n" is the number of messages in the list.
+Updates one or more messages in a XOB. XOB_Name is the name of the XOB. The messageList is a two dimensional array with messages and contents. For each row, the first element is the message name, the second element is the message content -- both are strings. "n" is the number of messages in the list.
+
+x.updateXOB(XOB_Name, messageName, messageContent);  
+
+Updates a single message in a XOB. XOB_Name is the name of the XOB. The messageName is the name of a single message in the XOB. messageContent is the String content of the message.
 
 ####Init Response  
 
