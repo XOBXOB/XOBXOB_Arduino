@@ -126,7 +126,7 @@ boolean XOBXOB_Ethernet::loadStreamedResponse()
 
 void XOBXOB_Ethernet::stop()
 {
-  return (_client.stop());
+  _client.stop();
 }
 
 String XOBXOB_Ethernet::getMessage(String propertyName)
