@@ -1,9 +1,9 @@
 ////////////////////////////////////////////////////////////////////////////
 //
-//  XOBXOB Blink :: Connector
+//  XOBXOB Blink :: WiFly Shield
 // 
-//  This sketch connects to the XOBXOB IoT platform using the Connector application 
-// 
+//  This sketch connects to the XOBXOB IoT platform using a Sparkfun
+//  WiFly shield. 
 //
 //  The MIT License (MIT)
 //  
@@ -27,34 +27,52 @@
 //  OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 //  THE SOFTWARE.// 
 
-#include <XOBXOB_Connector.h>
-
-///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////////////////////
 //
-// Change this for your API key (from your account dashboard)
+//
+//   IMPORTANT
+//
+//   To connect to your network, insert your network SSID and PASSWORD (see note below for UNSECURED networks)
+//   To connect to your XOBXOB account insert your APIKey below (from your account Dashboard)
 //
 
+char ssid[] = "your_wifi_ssid";
+char password[] = "your_wifi_password";
 String APIKey = "xxxx-xxxx-xxxx-xxxx-xxxx";
 
-///////////////////////////////////////////////////////////
+//
+///////////////////////////////////////////////////////////////////////////
 
-// Create XOBXOB object
-XOBXOB_Connector XOB (APIKey);
+
+#include <SPI.h>
+#include <WiFly.h>
+#include <XOBXOB.h>
+
+// Create WiFly and XOBXOB clients
+WiFlyClient wClient(XOBXOB_SERVER_NAME, XOBXOB_SERVER_PORT);
+XOBXOB xClient (&wClient, APIKey);
+
 
 // Response processing
 boolean lastResponseReceived = true;
-long lastRequestTime = -20000;
-String lastMessage;
+long    lastRequestTime = -20000;
 
 void setup() {
   
-  // Set LED pin to output. And, turn it off
+  // Set LED pin mode to output and turn it off
   pinMode (8, OUTPUT);
   digitalWrite (8, LOW);  
   
-  // Initialize XOBXOB
-  XOB.init();
+  // Start up the WiFly and try to join the network (poll every 5 seconds if unsuccessful)
+  WiFly.begin();
+  while (!WiFly.join(ssid, password)) delay (5000);
+
+  // Use this line rather than the above for unsecured networks
+  // while (!WiFly.join(ssid)) delay (5000);
   
+  // Make a connection. Keep trying every 5 seconds if not successful.
+  while (!wClient.connect()) delay (5000);
+
 }
 
 void loop()
@@ -63,31 +81,29 @@ void loop()
   // New XOB request every 4 seconds (if previous response has been received)
   if (lastResponseReceived && ((millis() - lastRequestTime) > 4*1000)) {
  
-    // Connect if not connected
-    while (!XOB.connected()) XOB.connect();    
-
-    // Update response flag and timer. Then, request information from XOB named "XOB"
+    // UPdate flags and request information from XOB named "XOB"
     lastResponseReceived = false;
     lastRequestTime = millis();
-    XOB.requestXOB("XOB");
-    
+    xClient.requestXOB("XOB");
+
   }
 
   // Load response a character at a time when it is available.
-  // If true is returned, that means a completed JSON object has been received
-  // If this is the first one (!done), then extract the "switch" message and 
-  // check to see if we should turn the LED on
+  // If loadStreamedResponse returns true, that means a completed response has been received
+  // Extract the "switch" message and check to see if we should turn the LED on
 
-  if (!lastResponseReceived && XOB.loadStreamedResponse()) {
+  if (!lastResponseReceived && xClient.checkResponse()) {
 
-    String LED = XOB.getMessage("switch");
+    // If we have a complete one, test the "switch" value and set the LED accordingly
+    lastResponseReceived = true;
+    String LED = xClient.getMessage("switch");
+    
     if (LED == "\"ON\"") {
       digitalWrite (8, HIGH);
     } else {
       digitalWrite (8, LOW);
     }
     
-    lastResponseReceived = true;
   }
 
 }

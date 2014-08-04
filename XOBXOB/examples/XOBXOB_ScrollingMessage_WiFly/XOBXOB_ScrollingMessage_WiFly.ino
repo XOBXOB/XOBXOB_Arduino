@@ -1,10 +1,9 @@
-
 ////////////////////////////////////////////////////////////////////////////
 //
-//  XOBXOB_ScrollingMessage :: Connector :: MAX7219 LED Matrix
+//  XOBXOB Scrolling Message :: WiFly Shield
 // 
-//  This sketch connects to the XOBXOB IoT platform using the XOBXOB Connector application 
-// 
+//  This sketch connects to the XOBXOB IoT platform using a Sparkfun
+//  WiFly shield. 
 //
 //  The MIT License (MIT)
 //  
@@ -28,36 +27,42 @@
 //  OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 //  THE SOFTWARE.// 
 
-// All of these includes are required
-#include <"avr/pgmspace.h">
-#include "LEDMatrix7219.h"
-#include "vincent90.h"
-
-#include <XOBXOB_Connector.h>
-
-///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////////////////////
 //
-// Change this for your API key (from your account dashboard)
+//
+//	 IMPORTANT
+//
+//	 To connect to your network, insert your network SSID and PASSWORD (see note below for UNSECURED networks)
+//	 To connect to your XOBXOB account insert your APIKey below (from your account Dashboard)
 //
 
+char ssid[] = "your_wifi_ssid";
+char password[] = "your_wifi_password";
 String APIKey = "xxxx-xxxx-xxxx-xxxx-xxxx";
 
-///////////////////////////////////////////////////////////
+//
+///////////////////////////////////////////////////////////////////////////
 
+#include <SPI.h>
+#include <WiFly.h>
+#include <XOBXOB.h>
 
-// Create XOBXOB object (for the Ethernet shield)
-XOBXOB_Connector XOB (APIKey);
+#include <LEDMatrix7219.h>
+#include <vincent90.h>
+
+// Create WiFly and XOBXOB clients
+WiFlyClient wClient(XOBXOB_SERVER_NAME, XOBXOB_SERVER_PORT);
+XOBXOB xClient (&wClient, APIKey);
 
 // Response processing
 boolean lastResponseReceived = true;
 long lastRequestTime = -20000;
-
 long timerStart;
 
 // Message variables
 int charNum = -1;
 int nextCharNum;
-String message = " Waiting... ";
+String message = "Waiting...";
 String newMessage;
 
 // Create the display object (use default parameters: 1, 3, 4, 5)
@@ -65,31 +70,35 @@ LEDMatrix7219 LEDMatrix(1, 15);
 
 void setup() {
 
-  // Initialize XOBXOB
-  XOB.init();
+  // Start up the WiFly and try to join the network (Keep trying every 5 seconds if unsuccessful)
+  WiFly.begin();
+  while (!WiFly.join(ssid, password)) delay (5000);
+
+  // Use this line rather than the above for unsecured networks
+  // while (!WiFly.join(ssid)) delay (5000);
+  
+  // Make a connection. Keep trying every 5 seconds if not successful.
+  while (!wClient.connect()) delay (5000);
 
 }
 
-void loop() {
-
+void loop()
+{
+    
   ////////////////////////////////////////////////////////
   //
   // XOBXOB GET Request
 
   // Request every 10 seconds (but, only if done with previous response)
-  if (lastResponseReceived && ( (millis() - lastRequestTime) > 10*1000)) {
-
-    // Connect if not connected
-    while (!XOB.connected()) XOB.connect();    
-
-    // Now, update lastResponseReceived flag and timer, and
-    // request information from XOB named "XOB"
+  if (lastResponseReceived && ((millis() - lastRequestTime) > 10*1000)) {
+ 
+    // Update flag and timer, and request information from XOB named "XOB"
     lastResponseReceived = false;
     lastRequestTime = millis();
-    XOB.requestXOB("XOB");
+    xClient.requestXOB("XOB");
     
   }
-  
+
   ////////////////////////////////////////////////////////
   //
   // Display message
@@ -111,28 +120,20 @@ void loop() {
       c++;
     };
   
-    ////////////////////////////////////////////////////////
-    //
-    // Load response
-  
-    // Load response a character at a time when it is available.
-    // If true is returned, that means a completed JSON object has been received
-    // If this is the first one (!lastResponseReceived), then extract the "switch" message and 
-    // check to see if we should turn the LED on
+    // Check the response (for 75 milliseconds).
+    // "True" means a completed JSON object has been received, so extract the message
     
     while (abs(millis() - timerStart) < 75) {
-      if (!lastResponseReceived && XOB.loadStreamedResponse()) {
-	      lastResponseReceived = true;
-	      newMessage = XOB.getMessage("text");
-	      newMessage = newMessage.substring(1, newMessage.length()-1);
-	      if (!message.equals(newMessage)) {
-	      	charNum = -1;
-	      	message = newMessage;
-	      }
+      if (!lastResponseReceived && xClient.checkResponse()) {
+        lastResponseReceived = true;
+        newMessage = xClient.getMessage("text");
+        newMessage = newMessage.substring(1, newMessage.length()-1);
+        if (!message.equals(newMessage)) {
+        	charNum = -1;
+        	message = newMessage;
+        }
       }
     }
   }
 
 }
-
-

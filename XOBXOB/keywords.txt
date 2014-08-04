@@ -6,21 +6,25 @@
 # Datatypes (KEYWORD1)
 #######################################
 
-XOBXOB_Connector	KEYWORD1
-FSON	KEYWORD1
+XOBXOB	KEYWORD1
+#XOBXOB_WiFly KEYWORD1
+#XOBXOB_Yun KEYWORD1
+#XOBXOB_Connector KEYWORD1
+FSON KEYWORD1
 
 #######################################
 # Methods and Functions (KEYWORD2)
 #######################################
 
-connect	KEYWORD2
-connected	KEYWORD2
-requestXOB	KEYWORD2
-updateXOB	KEYWORD2
-initResponse	KEYWORD2
-loadStreamedResponse	KEYWORD2
-stop	KEYWORD2
-getProperty	KEYWORD2
+connect KEYWORD2
+connected KEYWORD2
+requestXOB KEYWORD2
+updateXOB KEYWORD2
+initResponse KEYWORD2
+checkResponse KEYWORD2
+stop KEYWORD2
+getMessage KEYWORD2
+init KEYWORD2
 
 #######################################
 # Constants (LITERAL1)

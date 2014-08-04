@@ -1,11 +1,10 @@
 
 ////////////////////////////////////////////////////////////////////////////
 //
-//  XOBXOB_ScrollingMessage :: Ethernet Shield :: MAX7219 LED Matrix
+//  XOBXOB_ScrollingMessage :: Yún :: MAX7219 LED Matrix
 // 
-//  This sketch connects to the XOBXOB IoT platform using an Arduino Ethernet shield. 
+//  This sketch connects to the XOBXOB IoT platform using an Arduino Yún. 
 // 
-//
 //  The MIT License (MIT)
 //  
 //  Copyright (c) 2013 Robert W. Gallup, XOBXOB
@@ -28,35 +27,29 @@
 //  OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 //  THE SOFTWARE.// 
 
-// All of these includes are required
-#include <"avr/pgmspace.h">
-#include "LEDMatrix7219.h"
-#include "vincent90.h"
+#include <Process.h>
+#include <XOBXOB.h>
 
-#include <XOBXOB_Ethernet.h>
-#include <Ethernet.h>
-#include <SPI.h>
+#include <LEDMatrix7219.h>
+#include <vincent90.h>
 
 ///////////////////////////////////////////////////////////
 //
-// Change these for your Ethernet Shield and your APIKey
+// Change this for your APIKey
 //
-// NOTE: the MAC address for your Ethernet Shield might be
-// printed on a label on the bottom of the shield. Your
-// APIKey will be found on your account dashboard when you
+// NOTE: Your APIKey will be found on your account dashboard when you
 // login to XOBXOB)
 //
 
-byte mac[]    = { 0x00, 0x00, 0x00, 0x00, 0x00, 0x00 };
 String APIKey = "xxxx-xxxx-xxxx-xxxx-xxxx";
 
 ///////////////////////////////////////////////////////////
 
 
 // Create XOBXOB object (for the Ethernet shield)
-XOBXOB_Ethernet XOB (mac, APIKey);
+XOBXOB xClient (APIKey);
 
-// Response processing
+// Variables for request timing
 boolean lastResponseReceived = true;
 long lastRequestTime = -20000;
 
@@ -73,8 +66,7 @@ LEDMatrix7219 LEDMatrix(1, 15);
 
 void setup() {
 
-  // Initialize XOBXOB
-  XOB.init();
+  Bridge.begin();
 
 }
 
@@ -87,16 +79,11 @@ void loop() {
   // Request every 10 seconds (but, only if done with previous response)
   if (lastResponseReceived && ( (millis() - lastRequestTime) > 10*1000)) {
 
-    // Make sure connection is still valid
-    while (!XOB.connected()) {
-      XOB.connect();
-    }
-
-    // Now, update lastResponseReceived flag and timer, and
+    // Update lastResponseReceived flag and timer, and
     // request information from XOB named "XOB"
     lastResponseReceived = false;
     lastRequestTime = millis();
-    XOB.requestXOB("XOB");
+    xClient.requestXOB("XOB");
     
   }
   
@@ -123,26 +110,22 @@ void loop() {
   
     ////////////////////////////////////////////////////////
     //
-    // Load response
-  
-    // Load response a character at a time when it is available.
-    // If true is returned, that means a completed JSON object has been received
-    // If this is the first one (!lastResponseReceived), then extract the "switch" message and 
-    // check to see if we should turn the LED on
+    // Check response
+
+    // If checkResponse() returns true, a completed JSON object has been received, so get the message
+    // and queue it up if it has changed
     
     while (abs(millis() - timerStart) < 75) {
-      if (!lastResponseReceived && XOB.loadStreamedResponse()) {
-	      lastResponseReceived = true;
-	      newMessage = XOB.getMessage("text");
-	      newMessage = newMessage.substring(1, newMessage.length()-1);
-	      if (!message.equals(newMessage)) {
-	      	charNum = -1;
-	      	message = newMessage;
-	      }
+      if (!lastResponseReceived && xClient.checkResponse()) {
+        lastResponseReceived = true;
+        newMessage = xClient.getMessage("text");
+        newMessage = newMessage.substring(1, newMessage.length()-1);
+        if (!message.equals(newMessage)) {
+          charNum = -1;
+          message = newMessage;
+        }
       }
     }
   }
 
 }
-
-

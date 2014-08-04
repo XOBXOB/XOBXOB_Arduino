@@ -1,13 +1,12 @@
 ////////////////////////////////////////////////////////////////////////////
 //
-//  XOBXOB Blink :: Ethernet Shield
+//  XOBXOB Blink :: Connector
 // 
-//  This sketch connects to the XOBXOB IoT platform using an Arduino Ethernet shield. 
-// 
+//  This sketch connects to the XOBXOB IoT platform using the XOBXOB_Connector application 
 //
 //  The MIT License (MIT)
 //  
-//  Copyright (c) 2013 Robert W. Gallup, XOBXOB
+//  Copyright (c) 2013-2014 Robert W. Gallup, XOBXOB
 //  
 //  Permission is hereby granted, free of charge, to any person obtaining a copy
 //  of this software and associated documentation files (the "Software"), to deal
@@ -27,42 +26,33 @@
 //  OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 //  THE SOFTWARE.// 
 
-// All of these includes are required
-#include <XOBXOB_Ethernet.h>
-#include <Ethernet.h>
-#include <SPI.h>
+#include "XOBXOB.h"
 
 ///////////////////////////////////////////////////////////
 //
-// Change these for your Ethernet Shield and your APIKey
-//
-// NOTE: the MAC address for your Ethernet Shield might be
-// printed on a label on the bottom of the shield. Your
-// APIKey will be found on your account dashboard when you
-// login to XOBXOB)
+// Change this for your API key (from your account dashboard)
 //
 
-byte mac[]    = { 0x00, 0x00, 0x00, 0x00, 0x00, 0x00 };
 String APIKey = "xxxx-xxxx-xxxx-xxxx-xxxx";
 
 ///////////////////////////////////////////////////////////
 
+// Create XOBXOB object
+XOBXOB xClient (&Serial, APIKey);
 
-// Create XOBXOB object (for the Ethernet shield)
-XOBXOB_Ethernet XOB (mac, APIKey);
-
-// Variables for request timing
+// Response processing
 boolean lastResponseReceived = true;
 long lastRequestTime = -20000;
+String lastMessage;
 
 void setup() {
   
-  // Set the LED pin for output and turn it off
+  // Set LED pin to output. And, turn it off
   pinMode (8, OUTPUT);
   digitalWrite (8, LOW);  
   
-  // Initialize XOBXOB
-  XOB.init();
+  // Initialize Serial communication
+  Serial.begin (57600);
   
 }
 
@@ -70,35 +60,30 @@ void loop()
 {
     
   // New XOB request every 4 seconds (if previous response has been received)
-  if (lastResponseReceived && (abs(millis() - lastRequestTime) > 4*1000)) {
+  if (lastResponseReceived && ((millis() - lastRequestTime) > 4*1000)) {
  
-  	// if the connection has dropped, reconnect
-    while (!XOB.connected()) XOB.connect();
-
-    // Reset timer and response flags. Then, request "XOB" contents
+    // Update response flag and timer. Then, request information from XOB named "XOB"
     lastResponseReceived = false;
     lastRequestTime = millis();
+    xClient.requestXOB("XOB");
     
-    XOB.requestXOB("XOB");
-
   }
 
   // Load response a character at a time when it is available.
-  // If loadStreamedResponse returns true, a completed response has been received
-  // Get the "switch" message from the XOB and turn the LED on/off
-  // NOTE: The message contents are returned with quotes. So, include them
-  // in the comparison statement.
-  if (!lastResponseReceived && XOB.loadStreamedResponse()) {
+  // If true is returned, that means a completed JSON object has been received
+  // If this is the first one (!done), then extract the "switch" message and 
+  // check to see if we should turn the LED on
 
-    lastResponseReceived = true;
+  if (!lastResponseReceived && xClient.checkResponse()) {
 
-    String LED = XOB.getMessage("switch");
+    String LED = xClient.getMessage("switch");
     if (LED == "\"ON\"") {
       digitalWrite (8, HIGH);
     } else {
       digitalWrite (8, LOW);
     }
     
+    lastResponseReceived = true;
   }
 
 }
