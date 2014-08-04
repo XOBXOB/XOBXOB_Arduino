@@ -9,7 +9,7 @@ The library defines the XOBXOB object. That object is used to authenticate and s
 
 ####To install the XOBXOB library
 
-1) Download the Arduino zip file.
+1) Download the Arduino zip file.  
 2) Refer to the instructions on http://www.arduino.cc to install the library in the Arduino IDE (http://arduino.cc/en/Guide/Libraries).
 
 ####Running a test project
@@ -83,7 +83,7 @@ Used to get the next character in a reply. This makes it possible to read one ch
 
 ####Get Message
 
-x.getMessage(name);
+*x.getMessage(name);*
 
 Returns a message’s contents from the data just received with *checkResponse()*.
 
@@ -125,7 +125,7 @@ Used to get the next character in a reply. This makes it possible to read one ch
 
 ####Get Message
 
-x.getMessage(name);
+*x.getMessage(name);*
 
 Returns a message’s contents from the data just received with *checkResponse()*.
 
