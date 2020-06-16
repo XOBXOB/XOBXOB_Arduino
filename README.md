@@ -7,7 +7,7 @@ The library defines the XOBXOB object. That object is used to authenticate and s
 
 *Note: This library uses the new library structure introduced in Arduino 1.5 and will not work correctly in earlier versions. V1.5.7 also supports the Arduino Yún.*
 
-####To install the XOBXOB library
+#### To install the XOBXOB library
 
 1) Download the Arduino zip file.  
 2) Refer to the instructions on http://www.arduino.cc to install the library in the Arduino IDE (http://arduino.cc/en/Guide/Libraries).
